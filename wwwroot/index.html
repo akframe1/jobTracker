@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Job Tracker</title>
   <link rel="stylesheet" href="styles.css" />
-  <script src="app.js"></script>
 </head>
 <body>
 
@@ -15,7 +14,7 @@
   <div class="card">
     <div class="form-row">
       <input type="text" id="company" placeholder="Company (e.g. Acme Corp)" />
-      <input type="text" id="role"    placeholder="Role (e.g. Software Engineer)" />
+      <input type="text" id="role" placeholder="Role (e.g. Software Engineer)" />
       <select id="status">
         <option>Applied</option>
         <option>Interview</option>
@@ -35,35 +34,38 @@
           <th>Role</th>
           <th>Status</th>
           <th>Date</th>
-          <th></th>  <!-- edit -->
-          <th></th>  <!-- delete -->
+          <th></th> 
+          <th></th>
         </tr>
       </thead>
       <tbody id="app-list">
-        <tr><td colspan="5" id="empty-msg">No applications yet. Add one above.</td></tr>
+        <tr><td colspan="6" id="empty-msg">No applications yet. Add one above.</td></tr>
       </tbody>
     </table>
   </div>
 
-<!-- Edit Modal -->
-<div id="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); align-items:center; justify-content:center;">  <div class="card" style="width:400px; margin:0;">
-    <h3 style="margin-bottom:1rem; color:#2d3a8c;">Edit Application</h3>
-    <input type="hidden" id="edit-id" />
-    <div style="display:flex; flex-direction:column; gap:0.75rem;">
-      <input type="text" id="edit-company" placeholder="Company" />
-      <input type="text" id="edit-role" placeholder="Role" />
-      <select id="edit-status">
-        <option>Applied</option>
-        <option>Interview</option>
-        <option>Offer</option>
-        <option>Rejected</option>
-      </select>
-      <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
-        <button onclick="closeModal()" style="padding:0.6rem 1.2rem; border:1px solid #dde1ef; border-radius:6px; cursor:pointer; background:white;">Cancel</button>
-        <button onclick="saveEdit()" class="add-btn">Save</button>
+  <!-- Edit Modal -->
+  <div id="modal" class="modal-overlay">
+    <div class="card modal-card">
+      <h3 class="modal-title">Edit Application</h3>
+      <input type="hidden" id="edit-id" />
+      <div class="modal-fields">
+        <input type="text" id="edit-company" placeholder="Company" />
+        <input type="text" id="edit-role" placeholder="Role" />
+        <select id="edit-status">
+          <option>Applied</option>
+          <option>Interview</option>
+          <option>Offer</option>
+          <option>Rejected</option>
+        </select>
+        <div class="modal-actions">
+          <button onclick="closeModal()" class="cancel-btn">Cancel</button>
+          <button onclick="saveEdit()" class="add-btn">Save</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+  <script src="app.js"></script>
 </body>
 </html>

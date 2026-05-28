@@ -97,3 +97,43 @@ tr:last-child td { border-bottom: none; }
     color: #999;
     padding: 2rem;
 }
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-card {
+  width: 400px;
+  margin: 0;
+}
+
+.modal-title {
+  margin-bottom: 1rem;
+  color: #2d3a8c;
+}
+
+.modal-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.cancel-btn {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #dde1ef;
+  border-radius: 6px;
+  cursor: pointer;
+  background: white;
+}
