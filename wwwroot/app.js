@@ -1,10 +1,11 @@
 const API = '/applications';
+let allApplications = [];
 
 // Load all applications on page load
 async function loadApplications() {
     const res = await fetch(API);
-    const data = await res.json();
-    renderTable(data);
+    allApplications = await res.json();
+    applyFilters();
 }
 
 // Add a new application
@@ -50,8 +51,8 @@ function renderTable(applications) {
         <td>${escape(a.role)}</td>
         <td><span class="status status-${a.status}">${a.status}</span></td>
         <td>${new Date(a.createdAt).toLocaleDateString()}</td>
-        <td><button class="delete-btn" onclick="openModal(${a.id}, '${escape(a.company)}', '${escape(a.role)}', '${a.status}', '${a.createdAt}')">✏️</button></td>
-        <td><button class="delete-btn" onclick="deleteApplication(${a.id})">🗑</button></td>
+        <td><button class="edit-btn" onclick="openModal(${a.id}, '${escape(a.company)}', '${escape(a.role)}', '${a.status}', '${a.createdAt}')"><i class="fa-solid fa-pen"></i></button></td>
+        <td><button class="delete-btn" onclick="deleteApplication(${a.id})"><i class="fa-solid fa-trash"></i></button></td>
     </tr>
     `).join('');
 }
@@ -88,6 +89,40 @@ async function saveEdit() {
 
     closeModal();
     loadApplications();
+}
+
+function applyFilters() {
+    const text   = document.getElementById('filter-text').value.toLowerCase();
+    const status = document.getElementById('filter-status').value;
+    const sortBy = document.getElementById('sort-by').value;
+
+    let filtered = [...allApplications];
+
+    // Filter by search text
+    if (text) {
+        filtered = filtered.filter(a =>
+        a.company.toLowerCase().includes(text) ||
+        a.role.toLowerCase().includes(text)
+        );
+    }
+
+    // Filter by status
+    if (status) {
+        filtered = filtered.filter(a => a.status === status);
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+        switch (sortBy) {
+        case 'date-asc':     return new Date(a.createdAt) - new Date(b.createdAt);
+        case 'date-desc':    return new Date(b.createdAt) - new Date(a.createdAt);
+        case 'company-asc':  return a.company.localeCompare(b.company);
+        case 'company-desc': return b.company.localeCompare(a.company);
+        default:             return 0;
+        }
+    });
+
+    renderTable(filtered);
 }
 
 // Basic XSS protection
