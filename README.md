@@ -121,21 +121,11 @@ The API call is made from the C# backend — the Groq API key is never exposed t
 
 ## Deployment
 
-The application is deployed on [Railway](https://railway.app). 
+The application is deployed on [Railway](https://jobtracker-production-11d2.up.railway.app/).
 
-### Environment Variables on Railway
+The deployed version will not persist or have saved elements due to privacy concerns — it is intended to be used as a live demonstration of the application and its features, including the AI analysis tool. For personal use and to keep your application data private, the project is best run locally following the Getting Started steps above.
 
-Set the following variable in your Railway service under **Variables**:
-
-| Key | Value |
-|---|---|
-| `Groq__ApiKey` | Your Groq API key |
-
-> Note the double underscore `__` — this is how Railway maps environment variables to nested .NET configuration keys (`Groq:ApiKey`).
-
-### Auto-deploy
-
-Railway is connected to this GitHub repository. Every push to `main` triggers an automatic rebuild and redeploy. The live URL remains unchanged between deployments.
+Railway is connected to this GitHub repository. Every push to `main` triggers an automatic rebuild and redeploy, which also resets any data entered into the live version.
 
 ---
 
