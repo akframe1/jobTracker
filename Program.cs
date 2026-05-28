@@ -68,7 +68,6 @@ app.MapPut("/applications/{id}", async (int id, Application updated, AppDbContex
 app.MapPost("/analyse", async (AnalyseRequest request, IConfiguration config) =>
 {
     var apiKey = config["Groq:ApiKey"];
-    Console.WriteLine($"1. API Key present: {!string.IsNullOrEmpty(apiKey)}");
 
     var payload = new
     {
@@ -88,16 +87,9 @@ app.MapPost("/analyse", async (AnalyseRequest request, IConfiguration config) =>
     var url = "https://api.groq.com/openai/v1/chat/completions";
     var response = await http.PostAsJsonAsync(url, payload);
     var rawJson = await response.Content.ReadAsStringAsync();
-    Console.WriteLine($"2. Status code: {response.StatusCode}");
-    Console.WriteLine($"3. Raw JSON: {rawJson}");
 
     var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     var result = System.Text.Json.JsonSerializer.Deserialize<GroqResponse>(rawJson, options);
-
-    Console.WriteLine($"4. Result null: {result == null}");
-    Console.WriteLine($"5. Choices null: {result?.Choices == null}");
-    Console.WriteLine($"6. Choices length: {result?.Choices?.Length}");
-    Console.WriteLine($"7. Content: {result?.Choices?[0]?.Message?.Content}");
 
     var text = result?.Choices?[0]?.Message?.Content ?? "No response received.";
     return Results.Ok(new { analysis = text });
