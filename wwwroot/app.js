@@ -50,7 +50,7 @@ function renderTable(applications) {
         <td>${escape(a.role)}</td>
         <td><span class="status status-${a.status}">${a.status}</span></td>
         <td>${new Date(a.createdAt).toLocaleDateString()}</td>
-        <td><button class="delete-btn" onclick="openModal(${a.id}, '${escape(a.company)}', '${escape(a.role)}', '${a.status}')">✏️</button></td>
+        <td><button class="delete-btn" onclick="openModal(${a.id}, '${escape(a.company)}', '${escape(a.role)}', '${a.status}', '${a.createdAt}')">✏️</button></td>
         <td><button class="delete-btn" onclick="deleteApplication(${a.id})">🗑</button></td>
     </tr>
     `).join('');
@@ -73,16 +73,17 @@ async function saveEdit() {
     const company = document.getElementById('edit-company').value.trim();
     const role    = document.getElementById('edit-role').value.trim();
     const status  = document.getElementById('edit-status').value;
+    const date    = document.getElementById('edit-date').value;
 
     if (!company || !role) {
-    alert('Please fill in both Company and Role.');
-    return;
+        alert('Please fill in both Company and Role.');
+        return;
     }
 
     await fetch(`${API}/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ company, role, status })
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ company, role, status, createdAt: new Date(date).toISOString() })
     });
 
     closeModal();

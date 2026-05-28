@@ -59,6 +59,7 @@ app.MapPut("/applications/{id}", async (int id, Application updated, AppDbContex
     application.Company = updated.Company;
     application.Role = updated.Role;
     application.Status = updated.Status;
+    application.CreatedAt = updated.CreatedAt;
 
     await db.SaveChangesAsync();
     return Results.Ok(application);
