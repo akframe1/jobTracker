@@ -50,6 +50,20 @@ app.MapDelete("/applications/{id}", async (int id, AppDbContext db) =>
     return Results.NoContent();
 });
 
+// PUT - update an application
+app.MapPut("/applications/{id}", async (int id, Application updated, AppDbContext db) =>
+{
+    var application = await db.Applications.FindAsync(id);
+    if (application is null) return Results.NotFound();
+
+    application.Company = updated.Company;
+    application.Role = updated.Role;
+    application.Status = updated.Status;
+
+    await db.SaveChangesAsync();
+    return Results.Ok(application);
+});
+
 // Serve index.html at the root URL
 app.MapFallbackToFile("index.html");
 
