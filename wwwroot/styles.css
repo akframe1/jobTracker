@@ -137,3 +137,20 @@ tr:last-child td { border-bottom: none; }
   cursor: pointer;
   background: white;
 }
+
+.table-controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.table-controls input {
+  flex: 2;
+  min-width: 180px;
+}
+
+.table-controls select {
+  flex: 1;
+  min-width: 140px;
+}

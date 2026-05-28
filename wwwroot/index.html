@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Job Tracker</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
 
-  <h1>📋 Job Application Tracker</h1>
+  <h1><i class="fa-solid fa-briefcase"></i> Job Application Tracker</h1>
 
   <!-- Add Form -->
   <div class="card">
@@ -27,6 +28,22 @@
 
   <!-- Applications Table -->
   <div class="card">
+    <div class="table-controls">
+      <input type="text" id="filter-text" placeholder="Search company or role..." oninput="applyFilters()" />
+      <select id="filter-status" onchange="applyFilters()">
+        <option value="">All Statuses</option>
+        <option>Applied</option>
+        <option>Interview</option>
+        <option>Offer</option>
+        <option>Rejected</option>
+      </select>
+      <select id="sort-by" onchange="applyFilters()">
+        <option value="date-desc">Newest First</option>
+        <option value="date-asc">Oldest First</option>
+        <option value="company-asc">Company A-Z</option>
+        <option value="company-desc">Company Z-A</option>
+      </select>
+    </div>
     <table>
       <thead>
         <tr>
@@ -34,7 +51,7 @@
           <th>Role</th>
           <th>Status</th>
           <th>Date</th>
-          <th></th> 
+          <th></th>
           <th></th>
         </tr>
       </thead>
