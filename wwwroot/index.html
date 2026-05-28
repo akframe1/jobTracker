@@ -61,6 +61,19 @@
     </table>
   </div>
 
+    <!-- Analyse Section -->
+  <div class="card">
+    <h2 class="section-title">Analyse a Job Description</h2>
+    <textarea id="job-description" placeholder="Paste a job description here..." rows="6"></textarea>
+    <button class="add-btn analyse-btn" onclick="analyseJob()">
+      <i class="fa-solid fa-magnifying-glass"></i> Analyse
+    </button>
+    <div id="analysis-result" class="analysis-result" style="display:none;">
+      <h3 class="analysis-title">Analysis</h3>
+      <div id="analysis-content"></div>
+    </div>
+  </div>
+
   <!-- Edit Modal -->
   <div id="modal" class="modal-overlay">
     <div class="card modal-card">

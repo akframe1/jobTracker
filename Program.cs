@@ -65,6 +65,44 @@ app.MapPut("/applications/{id}", async (int id, Application updated, AppDbContex
     return Results.Ok(application);
 });
 
+app.MapPost("/analyse", async (AnalyseRequest request, IConfiguration config) =>
+{
+    var apiKey = config["Groq:ApiKey"];
+    Console.WriteLine($"1. API Key present: {!string.IsNullOrEmpty(apiKey)}");
+
+    var payload = new
+    {
+        model = "llama-3.1-8b-instant",
+        messages = new[]
+        {
+            new {
+                role = "user",
+                content = $"Analyse this job description and return three things: 1. A 2 sentence summary of the role 2. Top 5 key skills required 3. Three suggested talking points for an interview. Job description: {request.JobDescription}"
+            }
+        }
+    };
+
+    using var http = new HttpClient();
+    http.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+
+    var url = "https://api.groq.com/openai/v1/chat/completions";
+    var response = await http.PostAsJsonAsync(url, payload);
+    var rawJson = await response.Content.ReadAsStringAsync();
+    Console.WriteLine($"2. Status code: {response.StatusCode}");
+    Console.WriteLine($"3. Raw JSON: {rawJson}");
+
+    var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+    var result = System.Text.Json.JsonSerializer.Deserialize<GroqResponse>(rawJson, options);
+
+    Console.WriteLine($"4. Result null: {result == null}");
+    Console.WriteLine($"5. Choices null: {result?.Choices == null}");
+    Console.WriteLine($"6. Choices length: {result?.Choices?.Length}");
+    Console.WriteLine($"7. Content: {result?.Choices?[0]?.Message?.Content}");
+
+    var text = result?.Choices?[0]?.Message?.Content ?? "No response received.";
+    return Results.Ok(new { analysis = text });
+});
+
 // Serve index.html at the root URL
 app.MapFallbackToFile("index.html");
 
@@ -85,4 +123,24 @@ class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     public DbSet<Application> Applications => Set<Application>();
+}
+
+record AnalyseRequest(string JobDescription);
+
+public class GroqResponse
+{
+    [System.Text.Json.Serialization.JsonPropertyName("choices")]
+    public GroqChoice[]? Choices { get; set; }
+}
+
+public class GroqChoice
+{
+    [System.Text.Json.Serialization.JsonPropertyName("message")]
+    public GroqMessage? Message { get; set; }
+}
+
+public class GroqMessage
+{
+    [System.Text.Json.Serialization.JsonPropertyName("content")]
+    public string? Content { get; set; }
 }

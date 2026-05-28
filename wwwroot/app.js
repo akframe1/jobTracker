@@ -125,6 +125,40 @@ function applyFilters() {
     renderTable(filtered);
 }
 
+async function analyseJob() {
+    const jobDescription = document.getElementById('job-description').value.trim();
+
+    if (!jobDescription) {
+        alert('Please paste a job description first.');
+        return;
+    }
+
+    const resultDiv    = document.getElementById('analysis-result');
+    const contentDiv   = document.getElementById('analysis-content');
+    const button       = document.querySelector('.analyse-btn');
+
+    button.disabled    = true;
+    button.innerHTML   = '<i class="fa-solid fa-spinner fa-spin"></i> Analysing...';
+    resultDiv.style.display = 'none';
+
+    try {
+        const res = await fetch('/analyse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobDescription })
+        });
+
+        const data = await res.json();
+        contentDiv.innerText = data.analysis;
+        resultDiv.style.display = 'block';
+    } catch (err) {
+        alert('Something went wrong. Please try again.');
+    } finally {
+        button.disabled  = false;
+        button.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Analyse';
+    }
+}
+
 // Basic XSS protection
 function escape(str) {
     const d = document.createElement('div');
