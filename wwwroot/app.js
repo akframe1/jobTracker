@@ -15,14 +15,14 @@ async function addApplication() {
     const status  = document.getElementById('status').value;
 
     if (!company || !role) {
-    alert('Please fill in both Company and Role.');
-    return;
+        alert('Please fill in both Company and Role.');
+        return;
     }
 
     await fetch(API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ company, role, status })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ company, role, status })
     });
 
     document.getElementById('company').value = '';
@@ -41,8 +41,8 @@ function renderTable(applications) {
     const tbody = document.getElementById('app-list');
 
     if (applications.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" id="empty-msg">No applications yet. Add one above.</td></tr>';
-    return;
+        tbody.innerHTML = '<tr><td colspan="6" id="empty-msg">No applications yet. Add one above.</td></tr>';
+        return;
     }
 
     tbody.innerHTML = applications.map(a => `
