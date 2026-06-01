@@ -4,74 +4,151 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Job Tracker</title>
-  <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
   <h1><i class="fa-solid fa-briefcase"></i> Job Application Tracker</h1>
 
-  <!-- Add Form -->
-  <div class="card">
-    <div class="form-row">
-      <input type="text" id="company" placeholder="Company (e.g. Acme Corp)" />
-      <input type="text" id="role" placeholder="Role (e.g. Software Engineer)" />
-      <select id="status">
-        <option>Applied</option>
-        <option>Interview</option>
-        <option>Offer</option>
-        <option>Rejected</option>
-      </select>
-      <button class="add-btn" onclick="addApplication()">+ Add</button>
-    </div>
+  <!-- Tab Navigation -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('applications')">
+      <i class="fa-solid fa-list"></i> Applications
+    </button>
+    <button class="tab-btn" onclick="switchTab('options')">
+      <i class="fa-solid fa-diagram-project"></i> Options Calculator
+    </button>
   </div>
 
-  <!-- Applications Table -->
-  <div class="card">
-    <div class="table-controls">
-      <input type="text" id="filter-text" placeholder="Search company or role..." oninput="applyFilters()" />
-      <select id="filter-status" onchange="applyFilters()">
-        <option value="">All Statuses</option>
-        <option>Applied</option>
-        <option>Interview</option>
-        <option>Offer</option>
-        <option>Rejected</option>
-      </select>
-      <select id="sort-by" onchange="applyFilters()">
-        <option value="date-desc">Newest First</option>
-        <option value="date-asc">Oldest First</option>
-        <option value="company-asc">Company A-Z</option>
-        <option value="company-desc">Company Z-A</option>
-      </select>
+  <!-- Applications Tab -->
+  <div id="tab-applications" class="tab-content active">
+
+    <!-- Add Form -->
+    <div class="card">
+      <div class="form-row">
+        <input type="text" id="company" placeholder="Company (e.g. Acme Corp)" />
+        <input type="text" id="role" placeholder="Role (e.g. Software Engineer)" />
+        <select id="status">
+          <option>Applied</option>
+          <option>Interview</option>
+          <option>Offer</option>
+          <option>Rejected</option>
+        </select>
+        <button class="add-btn" onclick="addApplication()">+ Add</button>
+      </div>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Company</th>
-          <th>Role</th>
-          <th>Status</th>
-          <th>Date</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="app-list">
-        <tr><td colspan="6" id="empty-msg">No applications yet. Add one above.</td></tr>
-      </tbody>
-    </table>
-  </div>
+
+    <!-- Applications Table -->
+    <div class="card">
+      <div class="table-controls">
+        <input type="text" id="filter-text" placeholder="Search company or role..." oninput="applyFilters()" />
+        <select id="filter-status" onchange="applyFilters()">
+          <option value="">All Statuses</option>
+          <option>Applied</option>
+          <option>Interview</option>
+          <option>Offer</option>
+          <option>Rejected</option>
+        </select>
+        <select id="sort-by" onchange="applyFilters()">
+          <option value="date-desc">Newest First</option>
+          <option value="date-asc">Oldest First</option>
+          <option value="company-asc">Company A-Z</option>
+          <option value="company-desc">Company Z-A</option>
+        </select>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="app-list">
+          <tr><td colspan="6" id="empty-msg">No applications yet. Add one above.</td></tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Analyse Section -->
-  <div class="card">
-    <h2 class="section-title">Analyse a Job Description</h2>
-    <textarea id="job-description" placeholder="Paste a job description here..." rows="6"></textarea>
-    <button class="add-btn analyse-btn" onclick="analyseJob()">
-      <i class="fa-solid fa-magnifying-glass"></i> Analyse
-    </button>
-    <div id="analysis-result" class="analysis-result" style="display:none;">
-      <h3 class="analysis-title">Analysis</h3>
-      <div id="analysis-content"></div>
+    <div class="card">
+      <h2 class="section-title">Analyse a Job Description</h2>
+      <textarea id="job-description" placeholder="Paste a job description here..." rows="6"></textarea>
+      <button class="add-btn analyse-btn" onclick="analyseJob()">
+        <i class="fa-solid fa-magnifying-glass"></i> Analyse
+      </button>
+      <div id="analysis-result" class="analysis-result" style="display:none;">
+        <h3 class="analysis-title">Analysis</h3>
+        <div id="analysis-content"></div>
+      </div>
     </div>
+
+  </div>
+
+  <!-- Options Calculator Tab -->
+  <div id="tab-options" class="tab-content">
+
+    <div class="card">
+      <h2 class="section-title">American Options — Binomial Tree (CRR)</h2>
+      <p class="section-subtitle">Cox-Ross-Rubinstein model pricing American-style options with early exercise</p>
+      <div class="options-grid">
+        <div class="input-group">
+          <label for="b-spot-price">Spot Price (S)</label>
+          <input type="number" id="b-spot-price" placeholder="e.g. 100" step="0.01" />
+        </div>
+        <div class="input-group">
+          <label for="b-strike-price">Strike Price (K)</label>
+          <input type="number" id="b-strike-price" placeholder="e.g. 105" step="0.01" />
+        </div>
+        <div class="input-group">
+          <label for="b-time-expiry">Time to Expiry (years)</label>
+          <input type="number" id="b-time-expiry" placeholder="e.g. 0.5" step="0.01" />
+        </div>
+        <div class="input-group">
+          <label for="b-risk-free-rate">Risk Free Rate (e.g. 0.05)</label>
+          <input type="number" id="b-risk-free-rate" placeholder="e.g. 0.05" step="0.001" />
+        </div>
+        <div class="input-group">
+          <label for="b-volatility">Volatility (e.g. 0.20)</label>
+          <input type="number" id="b-volatility" placeholder="e.g. 0.20" step="0.01" />
+        </div>
+        <div class="input-group">
+          <label for="b-steps">Tree Steps (10–1000)</label>
+          <input type="number" id="b-steps" placeholder="e.g. 100" value="100" step="10" />
+        </div>
+      </div>
+      <button class="add-btn options-btn" onclick="calculateBinomial()">
+        <i class="fa-solid fa-diagram-project"></i> Calculate
+      </button>
+
+      <div id="binomial-result" style="display:none;">
+        <div class="options-results-grid">
+          <div class="result-card">
+            <h3>Prices</h3>
+            <div class="result-row"><span>American Call</span><span id="b-american-call"></span></div>
+            <div class="result-row"><span>American Put</span><span id="b-american-put"></span></div>
+            <div class="result-row"><span>European Call</span><span id="b-european-call"></span></div>
+            <div class="result-row"><span>European Put</span><span id="b-european-put"></span></div>
+            <div class="result-row"><span>Early Exercise Premium (Call)</span><span id="b-premium-call"></span></div>
+            <div class="result-row"><span>Early Exercise Premium (Put)</span><span id="b-premium-put"></span></div>
+          </div>
+          <div class="result-card">
+            <h3>Tree Parameters</h3>
+            <div class="result-row"><span>Up Factor (u)</span><span id="b-up-factor"></span></div>
+            <div class="result-row"><span>Down Factor (d)</span><span id="b-down-factor"></span></div>
+            <div class="result-row"><span>Risk Neutral Probability (p)</span><span id="b-rn-prob"></span></div>
+            <div class="result-row"><span>Time Step Size (dt)</span><span id="b-dt"></span></div>
+            <div class="result-row"><span>Call Delta</span><span id="b-call-delta"></span></div>
+            <div class="result-row"><span>Put Delta</span><span id="b-put-delta"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Edit Modal -->
