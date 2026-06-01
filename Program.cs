@@ -14,12 +14,17 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IAnalysisService, AnalysisService>();
+builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IAnalysisService, AnalysisService>();
+builder.Services.AddScoped<ApplicationValidator>();
 builder.Services.AddScoped<IBinomialCalculatorService, BinomialCalculatorService>();
 builder.Services.AddScoped<BinomialRequestValidator>();
 
 var app = builder.Build();
 
 app.UseStaticFiles();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseCors();
 
 using (var scope = app.Services.CreateScope())
