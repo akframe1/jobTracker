@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Tracker — Options Calculator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="/pages/applications.html" class="nav-brand"><i class="fa-solid fa-briefcase"></i> Job Tracker</a>
+    <div class="nav-links">
+      <a href="/pages/applications.html" class="nav-link">Applications</a>
+      <a href="/pages/options.html" class="nav-link active">Options Calculator</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>American Options Pricing</h1>
+    <p>Cox-Ross-Rubinstein Binomial Tree model with early exercise</p>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Inputs</h2>
+    <div class="options-grid">
+      <div class="input-group">
+        <label for="b-spot-price">Spot Price (S)</label>
+        <input type="number" id="b-spot-price" placeholder="e.g. 100" step="0.01" />
+      </div>
+      <div class="input-group">
+        <label for="b-strike-price">Strike Price (K)</label>
+        <input type="number" id="b-strike-price" placeholder="e.g. 105" step="0.01" />
+      </div>
+      <div class="input-group">
+        <label for="b-time-expiry">Time to Expiry (years)</label>
+        <input type="number" id="b-time-expiry" placeholder="e.g. 0.5" step="0.01" />
+      </div>
+      <div class="input-group">
+        <label for="b-risk-free-rate">Risk Free Rate</label>
+        <input type="number" id="b-risk-free-rate" placeholder="e.g. 0.05" step="0.001" />
+      </div>
+      <div class="input-group">
+        <label for="b-volatility">Volatility</label>
+        <input type="number" id="b-volatility" placeholder="e.g. 0.20" step="0.01" />
+      </div>
+      <div class="input-group">
+        <label for="b-steps">Tree Steps (10–1000)</label>
+        <input type="number" id="b-steps" placeholder="e.g. 100" value="100" step="10" />
+      </div>
+    </div>
+    <button class="add-btn options-btn" onclick="calculateBinomial()">
+      <i class="fa-solid fa-calculator"></i> Calculate
+    </button>
+  </div>
+
+  <div id="binomial-result" style="display:none;">
+    <div class="options-results-grid">
+      <div class="result-card">
+        <h3>Prices</h3>
+        <div class="result-row"><span>American Call</span><span id="b-american-call"></span></div>
+        <div class="result-row"><span>American Put</span><span id="b-american-put"></span></div>
+        <div class="result-row"><span>European Call</span><span id="b-european-call"></span></div>
+        <div class="result-row"><span>European Put</span><span id="b-european-put"></span></div>
+        <div class="result-row"><span>Early Exercise Premium (Call)</span><span id="b-premium-call"></span></div>
+        <div class="result-row"><span>Early Exercise Premium (Put)</span><span id="b-premium-put"></span></div>
+      </div>
+      <div class="result-card">
+        <h3>Tree Parameters</h3>
+        <div class="result-row"><span>Up Factor (u)</span><span id="b-up-factor"></span></div>
+        <div class="result-row"><span>Down Factor (d)</span><span id="b-down-factor"></span></div>
+        <div class="result-row"><span>Risk Neutral Probability (p)</span><span id="b-rn-prob"></span></div>
+        <div class="result-row"><span>Time Step Size (dt)</span><span id="b-dt"></span></div>
+        <div class="result-row"><span>Call Delta</span><span id="b-call-delta"></span></div>
+        <div class="result-row"><span>Put Delta</span><span id="b-put-delta"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/options.js"></script>
+</body>
+</html>

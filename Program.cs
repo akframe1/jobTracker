@@ -18,6 +18,8 @@ builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IAnalysisService, AnalysisService>();
 builder.Services.AddScoped<ApplicationValidator>();
+builder.Services.AddScoped<IBinomialCalculatorService, BinomialCalculatorService>();
+builder.Services.AddScoped<BinomialRequestValidator>();
 
 var app = builder.Build();
 
@@ -58,6 +60,19 @@ app.MapPost("/analyse", async (AnalyseRequest request, IAnalysisService svc) =>
 {
     var analysis = await svc.AnalyseAsync(request.JobDescription);
     return Results.Ok(new { analysis });
+});
+
+app.MapPost("/options/binomial", (BinomialRequest request, IBinomialCalculatorService svc, BinomialRequestValidator validator) =>
+{
+    var validation = validator.Validate(request);
+    if (!validation.IsValid)
+    {
+        var errors = validation.Errors.Select(e => e.ErrorMessage);
+        throw new ValidationException(errors);
+    }
+
+    var result = svc.Calculate(request);
+    return Results.Ok(result);
 });
 
 app.MapFallbackToFile("index.html");
