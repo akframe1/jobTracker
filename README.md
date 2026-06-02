@@ -1,16 +1,23 @@
 # 📋 Job Application Tracker
 
-A minimal full-stack web application for tracking job applications, built as a hands-on introduction to the C#/.NET stack. The project demonstrates a RESTful API backend, a vanilla JavaScript frontend, SQLite database integration, and AI-powered job description analysis via the Groq API.
+A full-stack web application for tracking job applications and financial options pricing, built as a demonstration of C#/.NET development. The project features a layered ASP.NET Core backend with a repository and service pattern, AI-powered job description analysis via the Groq API, and an American options pricing calculator using the Cox-Ross-Rubinstein Binomial Tree model.
 
 ---
 
 ## Features
 
+**Applications**
 - Add, edit, and delete job applications
 - Track status per application — Applied, Interview, Offer, Rejected
-- Search applications by company or role
-- Filter by status and sort by date or company name
-- Analyse a job description using AI to get a role summary, key skills, and interview talking points
+- Status transition validation — enforces logical progression between states
+- Search by company or role, filter by status, sort by date or company name
+- AI-powered job description analysis returning a role summary, key skills, and interview talking points
+
+**Options Calculator**
+- American-style options pricing via the Cox-Ross-Rubinstein Binomial Tree model
+- Early exercise premium calculation — direct comparison between American and European pricing
+- Full tree parameter output — up/down factors, risk neutral probability, time step size
+- Delta approximation from the first step of the tree
 
 ---
 
@@ -19,6 +26,8 @@ A minimal full-stack web application for tracking job applications, built as a h
 | Layer | Technology |
 |---|---|
 | Backend | ASP.NET Core Minimal API (.NET 9) |
+| Architecture | Repository pattern, Service layer, Dependency Injection |
+| Validation | FluentValidation |
 | Database | SQLite via Entity Framework Core |
 | Frontend | HTML + Vanilla JavaScript + CSS |
 | AI Integration | Groq API (Llama 3.1 8B) |
@@ -31,20 +40,48 @@ A minimal full-stack web application for tracking job applications, built as a h
 ```
 JobTracker/
 └── JobTracker.Api/
+    ├── Exceptions/
+    │   ├── ApplicationNotFoundException.cs
+    │   ├── InvalidStatusTransitionException.cs
+    │   └── ValidationException.cs
+    ├── Interfaces/
+    │   ├── IApplicationRepository.cs
+    │   ├── IApplicationService.cs
+    │   ├── IAnalysisService.cs
+    │   └── IBinomialCalculatorService.cs
+    ├── Middleware/
+    │   └── ExceptionHandlingMiddleware.cs
     ├── Models/
-    │   ├── Application.cs        # Job application entity
-    │   ├── AppDbContext.cs       # Entity Framework database context
-    │   ├── AnalyseRequest.cs     # Request model for AI analysis
-    │   └── GroqResponse.cs       # Response models for Groq API
+    │   ├── Application.cs
+    │   ├── AppDbContext.cs
+    │   ├── AnalyseRequest.cs
+    │   ├── GroqResponse.cs
+    │   ├── BinomialRequest.cs
+    │   └── BinomialResult.cs
+    ├── Repositories/
+    │   └── ApplicationRepository.cs
+    ├── Services/
+    │   ├── ApplicationService.cs
+    │   ├── AnalysisService.cs
+    │   └── BinomialCalculatorService.cs
+    ├── Validators/
+    │   ├── ApplicationValidator.cs
+    │   └── BinomialRequestValidator.cs
     ├── wwwroot/
-    │   ├── index.html            # Application markup
-    │   ├── app.js                # All JavaScript logic
-    │   └── styles.css            # All styling
+    │   ├── index.html            # Entry point, redirects to applications
+    │   ├── pages/
+    │   │   ├── applications.html # Job tracker page
+    │   │   └── options.html      # Options calculator page
+    │   ├── js/
+    │   │   ├── applications.js   # Applications page logic
+    │   │   └── options.js        # Options calculator logic
+    │   └── css/
+    │       └── styles.css        # Shared styling
     ├── Properties/
     │   └── launchSettings.json
     ├── Program.cs                # App configuration and API routes
     ├── JobTracker.Api.csproj     # Project dependencies
-    ├── appsettings.json          # App configuration
+    ├── appsettings.json
     └── appsettings.Development.json
 ```
 
@@ -97,6 +134,8 @@ The SQLite database file (`jobtracker.db`) is created automatically on first run
 
 ## API Endpoints
 
+**Applications**
+
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/applications` | Fetch all applications |
@@ -104,6 +143,32 @@ The SQLite database file (`jobtracker.db`) is created automatically on first run
 | PUT | `/applications/{id}` | Update an existing application |
 | DELETE | `/applications/{id}` | Delete an application |
 | POST | `/analyse` | Analyse a job description with AI |
+
+**Options**
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/options/binomial` | Price American options via CRR Binomial Tree |
+
+---
+
+## Architecture
+
+The backend follows a layered architecture separating concerns across interfaces, repositories, and services:
+
+- **Interfaces** define contracts for all services and repositories following the C# `I` prefix convention
+- **Repositories** are the only layer with direct database access via Entity Framework Core
+- **Services** contain all business logic including status transition rules and input validation
+- **Middleware** provides centralised exception handling, mapping typed exceptions to consistent HTTP responses
+- **FluentValidation** validates all incoming requests before they reach the service layer
+
+---
+
+## Options Pricing — Binomial Tree (CRR)
+
+The Cox-Ross-Rubinstein model prices American-style options, which are the dominant contract type on US exchanges such as the CBOE and CME. Unlike the Black-Scholes model which is limited to European options, the binomial tree accounts for early exercise at every node by comparing the discounted continuation value against the intrinsic value of immediate exercise — taking whichever is greater.
+
+The model outputs both American and European prices for direct comparison, with the difference representing the early exercise premium.
 
 ---
 
@@ -115,7 +180,7 @@ The `/analyse` endpoint accepts a job description and returns:
 2. Top 5 key skills required
 3. Three suggested talking points for an interview
 
-The API call is made from the C# backend — the Groq API key is never exposed to the browser.
+The API call is made server-side from the C# backend — the Groq API key is never exposed to the browser.
 
 ---
 
@@ -123,7 +188,7 @@ The API call is made from the C# backend — the Groq API key is never exposed t
 
 The application is deployed on [Railway](https://jobtracker-production-11d2.up.railway.app/).
 
-The deployed version will not persist or have saved elements due to privacy concerns — it is intended to be used as a live demonstration of the application and its features, including the AI analysis tool. For personal use and to keep your application data private, the project is best run locally following the Getting Started steps above.
+The deployed version will not persist or have saved elements due to privacy concerns — it is intended to be used as a live demonstration of the application and its features, including the AI analysis tool and options calculator. For personal use and to keep application data private, the project is best run locally following the Getting Started steps above.
 
 Railway is connected to this GitHub repository. Every push to `main` triggers an automatic rebuild and redeploy, which also resets any data entered into the live version.
 
@@ -167,10 +232,10 @@ git push
 ## Notes
 
 - SQLite is used for local development and is sufficient for demonstration purposes. The `.db` file is excluded from source control via `.gitignore`.
-- The deployed version on Railway uses the same SQLite setup. For a production application with persistent data, this would be swapped to PostgreSQL — EF Core supports this with a single line change.
+- For a production deployment with persistent data, SQLite would be replaced with PostgreSQL — EF Core supports this with a single configuration change.
 
 ---
 
 ## Author
 
-Built by [akframe1](https://github.com/akframe1) as a learning project to demonstrate C#/.NET and JavaScript skills.
+Built by [akframe1](https://github.com/akframe1) as a learning project demonstrating C#/.NET, financial modelling, and JavaScript skills.
